@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Tracker</title>
+  <style>
+    :root {
+      --bg-base: #0f0f11;
+      --bg-surface: #18181b;
+      --bg-surface-elevated: #222226;
+      --bg-surface-hover: #2b2b30;
+      
+      --border-subtle: #27272a;
+      --border-strong: #3f3f46;
+      --border-focus: #71717a;
+
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 14px;
+      --radius-pill: 9999px;
+
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.55);
+      --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.75);
+
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s ease;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: 0.875rem;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+      user-select: none;
+    }
+
+    a {
+      color: var(--text-main);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .app-container {
+      max-width: 1140px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .btn:hover {
+      background-color: var(--bg-surface-hover);
+      border-color: var(--border-strong);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background-color: #ededed;
+      color: #0f0f11;
+      font-weight: 600;
+      border-color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.78rem;
+    }
+
+    .btn-icon {
+      padding: 0.4rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      border: 1px solid transparent;
+    }
+
+    .btn-icon:hover {
+      background-color: var(--bg-surface-hover);
+      color: var(--text-main);
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.55rem 0.75rem;
+      width: 100%;
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--border-focus);
+      background-color: var(--bg-surface-hover);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      display: inline-block;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      user-select: none;
+    }
+
+    input[type="checkbox"] {
+      appearance: none;
+      width: 1.15rem;
+      height: 1.15rem;
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      cursor: pointer;
+      display: grid;
+      place-content: center;
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    input[type="checkbox"]:checked {
+      background-color: var(--text-main);
+      border-color: var(--text-main);
+    }
+
+    input[type="checkbox"]:checked::after {
+      content: "";
+      width: 5px;
+      height: 9px;
+      border: solid #0f0f11;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .stat-title {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .analytics-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-top: -0.5rem;
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .analytics-item {
+      background: var(--bg-surface-elevated);
+      padding: 0.6rem 0.8rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .analytics-item span {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .analytics-item strong {
+      font-size: 1.1rem;
+      color: var(--text-main);
+    }
+
+    .controls-panel {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .search-row input {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .filter-toggle-row {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 0.25rem;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(3px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-normal);
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      padding: 1.5rem;
+      transform: translateY(15px);
+      transition: transform var(--transition-normal);
+    }
+
+    .modal-backdrop.open .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .modal-header h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1rem;
+    }
+
+    .timeline-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .timeline-header {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+      user-select: none;
+      transition: background-color var(--transition-fast);
+    }
+
+    .timeline-header:hover {
+      background-color: var(--bg-surface-elevated);
+    }
+
+    .timeline-header h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .timeline-count {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--bg-surface-elevated);
+      padding: 0.15rem 0.55rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .timeline-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-left: 0.5rem;
+      border-left: 2px solid var(--border-subtle);
+      margin-left: 0.5rem;
+    }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .card-title-area {
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-main);
+      word-break: break-word;
+    }
+
+    .card-meta-pills {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: 0.4rem;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      padding: 0.18rem 0.5rem;
+      border-radius: var(--radius-pill);
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .badge-revision {
+      border-color: #52525b;
+      color: var(--text-main);
+      background-color: #27272a;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .star-btn {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      padding: 0.15rem 0.35rem;
+      line-height: 1;
+      transition: color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .star-btn.active {
+      color: #ffffff;
+    }
+
+    .star-btn:hover {
+      transform: scale(1.15);
+    }
+
+    .card-description-preview {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card-details-collapsible {
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 0.25rem;
+    }
+
+    .card-details-collapsible.open {
+      display: flex;
+    }
+
+    .card-full-description {
+      font-size: 0.875rem;
+      color: var(--text-main);
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: var(--bg-surface-elevated);
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .tag-pill {
+      font-size: 0.72rem;
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-pill);
+    }
+
+    .card-resource {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    .card-bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.25rem;
+    }
+
+    .empty-state {
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .empty-state p {
+      font-size: 0.95rem;
+      max-width: 400px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #importFileInput {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 0.85rem;
+      }
+      .timeline-cards {
+        padding-left: 0;
+        border-left: none;
+        margin-left: 0;
+      }
+      .filter-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <div>
+        <h1 class="brand-title">Learning Tracker</h1>
+        <div class="brand-subtitle">Offline Knowledge Journal & Daily Practice Log</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" id="btnOpenAddModal">
+          <span>+ Add Entry</span>
+        </button>
+        <button class="btn" id="btnExportData" title="Export entries to JSON file">Export</button>
+        <button class="btn" id="btnTriggerImport" title="Import entries from JSON file">Import</button>
+        <input type="file" id="importFileInput" accept=".json">
+      </div>
+    </header>
+
+    <section class="dashboard-grid">
+      <div class="stat-card">
+        <span class="stat-title">Total Entries</span>
+        <span class="stat-value" id="statTotalEntries">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-title">Today's Entries</span>
+        <span class="stat-value" id="statTodayEntries">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-title">Total Time</span>
+        <span class="stat-value" id="statTotalTime">0m</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-title">Current Streak</span>
+        <span class="stat-value" id="statStreak">0d</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-title">Pending Revisions</span>
+        <span class="stat-value" id="statPendingRevisions">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-title">Coding Solved</span>
+        <span class="stat-value" id="statCodingSolved">0</span>
+      </div>
+    </section>
+
+    <div style="text-align: right;">
+      <button class="btn btn-sm" id="btnToggleAnalytics">Detailed Breakdown ▾</button>
+    </div>
+
+    <section class="analytics-panel hidden" id="analyticsPanel">
+      <span class="stat-title">Category & Execution Breakdown</span>
+      <div class="analytics-grid">
+        <div class="analytics-item"><span>Concepts</span><strong id="statConcepts">0</strong></div>
+        <div class="analytics-item"><span>Projects</span><strong id="statProjects">0</strong></div>
+        <div class="analytics-item"><span>Placement</span><strong id="statPlacement">0</strong></div>
+        <div class="analytics-item"><span>Tech General</span><strong id="statTechGeneral">0</strong></div>
+        <div class="analytics-item"><span>Completed Items</span><strong id="statCompleted">0</strong></div>
+        <div class="analytics-item"><span>Average Study Time</span><strong id="statAvgTime">0m</strong></div>
+      </div>
+    </section>
+
+    <section class="controls-panel">
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="Search by title, description, domain, or tags...">
+        <select id="sortBy" style="max-width: 200px;">
+          <option value="newest">Sort: Newest First</option>
+          <option value="oldest">Sort: Oldest First</option>
+          <option value="longest">Duration: Longest</option>
+          <option value="shortest">Duration: Shortest</option>
+          <option value="alpha">Alphabetical (A-Z)</option>
+        </select>
+      </div>
+
+      <div class="filter-grid">
+        <input type="date" id="filterDate" title="Filter by date">
+        
+        <select id="filterCategory">
+          <option value="">All Categories</option>
+          <option value="Concept">Concept</option>
+          <option value="Coding Problem">Coding Problem</option>
+          <option value="Placement">Placement</option>
+          <option value="Project">Project</option>
+          <option value="Course / Video">Course / Video</option>
+          <option value="Documentation / Article">Documentation / Article</option>
+          <option value="Revision">Revision</option>
+          <option value="Technical General">Technical General</option>
+          <option value="Notes">Notes</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+
+        <input type="text" id="filterDomain" placeholder="Filter domain...">
+
+        <select id="filterDifficulty">
+          <option value="">All Difficulties</option>
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+
+        <select id="filterStatus">
+          <option value="">All Statuses</option>
+          <option value="Started">Started</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+          <option value="Revised">Revised</option>
+        </select>
+      </div>
+
+      <div class="filter-toggle-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="filterRevision"> Needs Revision Only
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="filterFavorites"> Favorites Only
+        </label>
+        <button class="btn btn-sm" id="btnResetFilters" style="margin-left: auto;">Reset Filters</button>
+      </div>
+    </section>
+
+    <main id="timelineContainer"></main>
+
+    <div id="emptyState" class="empty-state hidden">
+      <p>No learning records yet. Add your first learning entry to begin tracking your progress.</p>
+      <button class="btn btn-primary" id="btnEmptyAdd">Add Entry</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="entryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Learning Entry</h2>
+        <button class="btn btn-icon" id="btnCloseModal" title="Close">✕</button>
+      </div>
+
+      <form id="entryForm">
+        <input type="hidden" id="entryId">
+
+        <div class="form-row" style="margin-bottom: 0.85rem;">
+          <div class="form-group">
+            <label for="formDate">Date *</label>
+            <input type="date" id="formDate" required>
+          </div>
+          <div class="form-group">
+            <label for="formDuration">Duration (minutes) *</label>
+            <input type="number" id="formDuration" min="1" max="1440" required placeholder="e.g. 45">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label for="formTitle">Title *</label>
+          <input type="text" id="formTitle" required placeholder="e.g. Binary Search, Docker Basics...">
+        </div>
+
+        <div class="form-row" style="margin-bottom: 0.85rem;">
+          <div class="form-group">
+            <label for="formCategory">Category *</label>
+            <select id="formCategory" required>
+              <option value="Concept">Concept</option>
+              <option value="Coding Problem">Coding Problem</option>
+              <option value="Placement">Placement</option>
+              <option value="Project">Project</option>
+              <option value="Course / Video">Course / Video</option>
+              <option value="Documentation / Article">Documentation / Article</option>
+              <option value="Revision">Revision</option>
+              <option value="Technical General">Technical General</option>
+              <option value="Notes">Notes</option>
+              <option value="Miscellaneous">Miscellaneous</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="formDomain">Domain *</label>
+            <input type="text" id="formDomain" required placeholder="e.g. DSA, WebDev, AI, Linux">
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom: 0.85rem;">
+          <div class="form-group">
+            <label for="formDifficulty">Difficulty</label>
+            <select id="formDifficulty">
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="formStatus">Status</label>
+            <select id="formStatus">
+              <option value="Started">Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Revised">Revised</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label for="formTags">Tags (comma-separated)</label>
+          <input type="text" id="formTags" placeholder="e.g. Graph, BFS, LeetCode">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label for="formResource">Resource (Optional link or note)</label>
+          <input type="text" id="formResource" placeholder="e.g. https://leetcode.com/problems/... or Book Ch. 4">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label for="formDescription">Description & Notes</label>
+          <textarea id="formDescription" placeholder="Key takeaways, formulas, edge cases, implementation details..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="formRevision"> Mark as Revision Required
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="formFavorite"> Add to Favorites
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn" id="btnCancelModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveEntry">Save Entry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'learning_tracker_entries_v1';
+    let entries = [];
+    let collapsedDates = new Set();
+
+    const getTodayISO = () => new Date().toISOString().split('T')[0];
+
+    function loadEntries() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        entries = stored ? JSON.parse(stored) : [];
+      } catch (err) {
+        console.error('Failed to parse stored entries:', err);
+        entries = [];
+      }
+    }
+
+    function saveEntries() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+      } catch (err) {
+        console.error('Failed to save to localStorage:', err);
+      }
+    }
+
+    function formatMinutes(minutes) {
+      const mins = Number(minutes) || 0;
+      if (mins < 60) return `${mins}m`;
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return m > 0 ? `${h}h ${m}m` : `${h}h`;
+    }
+
+    function sanitizeHTML(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function calculateStreak(sortedDatesDesc) {
+      if (!sortedDatesDesc.length) return 0;
+      
+      const uniqueDates = [...new Set(sortedDatesDesc)];
+      const today = getTodayISO();
+      
+      const mostRecent = uniqueDates[0];
+      const todayTime = new Date(today).getTime();
+      const mostRecentTime = new Date(mostRecent).getTime();
+      const oneDayMs = 24 * 60 * 60 * 1000;
+      
+      const diffFromToday = Math.round((todayTime - mostRecentTime) / oneDayMs);
+      if (diffFromToday > 1) return 0;
+
+      let streak = 1;
+      for (let i = 0; i < uniqueDates.length - 1; i++) {
+        const current = new Date(uniqueDates[i]).getTime();
+        const next = new Date(uniqueDates[i + 1]).getTime();
+        const diff = Math.round((current - next) / oneDayMs);
+        if (diff === 1) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    function updateStatistics() {
+      const totalEntries = entries.length;
+      const todayStr = getTodayISO();
+      
+      let todayCount = 0;
+      let totalDuration = 0;
+      let pendingRevisions = 0;
+      let codingProblems = 0;
+      let concepts = 0;
+      let projects = 0;
+      let placement = 0;
+      let technicalGeneral = 0;
+      let completedCount = 0;
+
+      const dateList = [];
+
+      entries.forEach(e => {
+        if (e.date === todayStr) todayCount++;
+        totalDuration += (Number(e.duration) || 0);
+        if (e.revisionRequired) pendingRevisions++;
+        if (e.category === 'Coding Problem') codingProblems++;
+        if (e.category === 'Concept') concepts++;
+        if (e.category === 'Project') projects++;
+        if (e.category === 'Placement') placement++;
+        if (e.category === 'Technical General') technicalGeneral++;
+        if (e.status === 'Completed' || e.status === 'Revised') completedCount++;
+        if (e.date) dateList.push(e.date);
+      });
+
+      dateList.sort((a, b) => new Date(b) - new Date(a));
+      const currentStreak = calculateStreak(dateList);
+      const avgDuration = totalEntries > 0 ? Math.round(totalDuration / totalEntries) : 0;
+
+      document.getElementById('statTotalEntries').innerText = totalEntries;
+      document.getElementById('statTodayEntries').innerText = todayCount;
+      document.getElementById('statTotalTime').innerText = formatMinutes(totalDuration);
+      document.getElementById('statStreak').innerText = `${currentStreak}d`;
+      document.getElementById('statPendingRevisions').innerText = pendingRevisions;
+      document.getElementById('statCodingSolved').innerText = codingProblems;
+
+      document.getElementById('statConcepts').innerText = concepts;
+      document.getElementById('statProjects').innerText = projects;
+      document.getElementById('statPlacement').innerText = placement;
+      document.getElementById('statTechGeneral').innerText = technicalGeneral;
+      document.getElementById('statCompleted').innerText = completedCount;
+      document.getElementById('statAvgTime').innerText = formatMinutes(avgDuration);
+    }
+
+    function getFilteredAndSortedEntries() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const filterDate = document.getElementById('filterDate').value;
+      const filterCategory = document.getElementById('filterCategory').value;
+      const filterDomain = document.getElementById('filterDomain').value.trim().toLowerCase();
+      const filterDifficulty = document.getElementById('filterDifficulty').value;
+      const filterStatus = document.getElementById('filterStatus').value;
+      const filterRevision = document.getElementById('filterRevision').checked;
+      const filterFavorites = document.getElementById('filterFavorites').checked;
+      const sortBy = document.getElementById('sortBy').value;
+
+      let result = entries.filter(item => {
+        if (filterDate && item.date !== filterDate) return false;
+        if (filterCategory && item.category !== filterCategory) return false;
+        if (filterDomain && !(item.domain || '').toLowerCase().includes(filterDomain)) return false;
+        if (filterDifficulty && item.difficulty !== filterDifficulty) return false;
+        if (filterStatus && item.status !== filterStatus) return false;
+        if (filterRevision && !item.revisionRequired) return false;
+        if (filterFavorites && !item.favorite) return false;
+
+        if (query) {
+          const titleMatch = (item.title || '').toLowerCase().includes(query);
+          const descMatch = (item.description || '').toLowerCase().includes(query);
+          const domainMatch = (item.domain || '').toLowerCase().includes(query);
+          const tagsMatch = (item.tags || []).some(t => t.toLowerCase().includes(query));
+          if (!titleMatch && !descMatch && !domainMatch && !tagsMatch) return false;
+        }
+
+        return true;
+      });
+
+      result.sort((a, b) => {
+        if (sortBy === 'newest') {
+          return new Date(b.date) - new Date(a.date) || b.createdAt - a.createdAt;
+        } else if (sortBy === 'oldest') {
+          return new Date(a.date) - new Date(b.date) || a.createdAt - b.createdAt;
+        } else if (sortBy === 'longest') {
+          return (Number(b.duration) || 0) - (Number(a.duration) || 0);
+        } else if (sortBy === 'shortest') {
+          return (Number(a.duration) || 0) - (Number(b.duration) || 0);
+        } else if (sortBy === 'alpha') {
+          return (a.title || '').localeCompare(b.title || '');
+        }
+        return 0;
+      });
+
+      return result;
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('timelineContainer');
+      const emptyState = document.getElementById('emptyState');
+      const filtered = getFilteredAndSortedEntries();
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      const groups = {};
+      filtered.forEach(entry => {
+        const dateKey = entry.date || 'Unspecified Date';
+        if (!groups[dateKey]) groups[dateKey] = [];
+        groups[dateKey].push(entry);
+      });
+
+      const dateKeys = Object.keys(groups);
+
+      container.innerHTML = dateKeys.map(dateKey => {
+        const items = groups[dateKey];
+        const isCollapsed = collapsedDates.has(dateKey);
+        const totalDayTime = items.reduce((acc, curr) => acc + (Number(curr.duration) || 0), 0);
+
+        return `
+          <div class="timeline-group" data-date="${dateKey}">
+            <div class="timeline-header" onclick="toggleDateGroup('${dateKey}')">
+              <h3>
+                <span>${isCollapsed ? '▸' : '▾'}</span>
+                <span>${formatDateLabel(dateKey)}</span>
+                <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">(${formatMinutes(totalDayTime)})</span>
+              </h3>
+              <span class="timeline-count">${items.length} ${items.length === 1 ? 'entry' : 'entries'}</span>
+            </div>
+            <div class="timeline-cards ${isCollapsed ? 'hidden' : ''}">
+              ${items.map(item => renderEntryCard(item)).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatDateLabel(dateString) {
+      if (dateString === 'Unspecified Date') return dateString;
+      try {
+        const d = new Date(dateString + 'T00:00:00');
+        return d.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+      } catch (e) {
+        return dateString;
+      }
+    }
+
+    function renderEntryCard(item) {
+      const isFavorite = !!item.favorite;
+      const hasRevision = !!item.revisionRequired;
+      const tagsList = Array.isArray(item.tags) ? item.tags : [];
+      const resourceStr = (item.resource || '').trim();
+      const isURL = resourceStr.startsWith('http://') || resourceStr.startsWith('https://');
+
+      return `
+        <div class="card" id="card-${item.id}">
+          <div class="card-top">
+            <div class="card-title-area">
+              <div class="card-title">${sanitizeHTML(item.title)}</div>
+              <div class="card-meta-pills">
+                <span class="badge">${sanitizeHTML(item.category)}</span>
+                <span class="badge">${sanitizeHTML(item.domain)}</span>
+                <span class="badge">${formatMinutes(item.duration)}</span>
+                <span class="badge">${sanitizeHTML(item.difficulty || 'Medium')}</span>
+                <span class="badge">${sanitizeHTML(item.status || 'Started')}</span>
+                ${hasRevision ? '<span class="badge badge-revision">⟳ Revision Required</span>' : ''}
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="star-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite('${item.id}')" title="Toggle Favorite">
+                ${isFavorite ? '★' : '☆'}
+              </button>
+              <button class="btn btn-sm" onclick="openEditModal('${item.id}')">Edit</button>
+              <button class="btn btn-sm" onclick="deleteEntry('${item.id}')">Delete</button>
+            </div>
+          </div>
+
+          ${item.description ? `
+            <div class="card-description-preview" onclick="toggleCardDetails('${item.id}')" title="Click to expand/collapse">
+              ${sanitizeHTML(item.description)}
+            </div>
+          ` : ''}
+
+          <div class="card-details-collapsible" id="details-${item.id}">
+            ${item.description ? `
+              <div class="card-full-description">${sanitizeHTML(item.description)}</div>
+            ` : ''}
+
+            ${tagsList.length > 0 ? `
+              <div class="card-tags">
+                ${tagsList.map(tag => `<span class="tag-pill">#${sanitizeHTML(tag)}</span>`).join('')}
+              </div>
+            ` : ''}
+
+            ${resourceStr ? `
+              <div class="card-resource">
+                <strong>Resource: </strong>
+                ${isURL ? `<a href="${sanitizeHTML(resourceStr)}" target="_blank" rel="noopener noreferrer">${sanitizeHTML(resourceStr)}</a>` : sanitizeHTML(resourceStr)}
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="card-bottom-bar">
+            <button class="btn btn-sm" onclick="toggleCardDetails('${item.id}')" id="expandBtn-${item.id}" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">
+              Expand Details ▾
+            </button>
+            <span style="font-size: 0.72rem; color: var(--text-dim);">${item.date}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleDateGroup(dateKey) {
+      if (collapsedDates.has(dateKey)) {
+        collapsedDates.delete(dateKey);
+      } else {
+        collapsedDates.add(dateKey);
+      }
+      renderTimeline();
+    }
+
+    function toggleCardDetails(id) {
+      const detailsEl = document.getElementById(`details-${id}`);
+      const btnEl = document.getElementById(`expandBtn-${id}`);
+      if (!detailsEl) return;
+
+      const isOpen = detailsEl.classList.toggle('open');
+      if (btnEl) {
+        btnEl.innerText = isOpen ? 'Collapse Details ▴' : 'Expand Details ▾';
+      }
+    }
+
+    function toggleFavorite(id) {
+      const index = entries.findIndex(e => e.id === id);
+      if (index !== -1) {
+        entries[index].favorite = !entries[index].favorite;
+        saveEntries();
+        renderAll();
+      }
+    }
+
+    function deleteEntry(id) {
+      const target = entries.find(e => e.id === id);
+      const title = target ? `"${target.title}"` : 'this entry';
+      if (window.confirm(`Are you sure you want to delete ${title}? This action cannot be undone.`)) {
+        entries = entries.filter(e => e.id !== id);
+        saveEntries();
+        renderAll();
+      }
+    }
+
+    const modal = document.getElementById('entryModal');
+    const form = document.getElementById('entryForm');
+
+    function openAddModal() {
+      form.reset();
+      document.getElementById('entryId').value = '';
+      document.getElementById('modalTitle').innerText = 'Add Learning Entry';
+      document.getElementById('formDate').value = getTodayISO();
+      document.getElementById('formDuration').value = '30';
+      document.getElementById('formCategory').value = 'Concept';
+      document.getElementById('formDifficulty').value = 'Medium';
+      document.getElementById('formStatus').value = 'Completed';
+      modal.classList.add('open');
+      document.getElementById('formTitle').focus();
+    }
+
+    function openEditModal(id) {
+      const item = entries.find(e => e.id === id);
+      if (!item) return;
+
+      document.getElementById('entryId').value = item.id;
+      document.getElementById('modalTitle').innerText = 'Edit Learning Entry';
+      document.getElementById('formDate').value = item.date || getTodayISO();
+      document.getElementById('formDuration').value = item.duration || 30;
+      document.getElementById('formTitle').value = item.title || '';
+      document.getElementById('formCategory').value = item.category || 'Concept';
+      document.getElementById('formDomain').value = item.domain || '';
+      document.getElementById('formDifficulty').value = item.difficulty || 'Medium';
+      document.getElementById('formStatus').value = item.status || 'Started';
+      document.getElementById('formTags').value = Array.isArray(item.tags) ? item.tags.join(', ') : '';
+      document.getElementById('formResource').value = item.resource || '';
+      document.getElementById('formDescription').value = item.description || '';
+      document.getElementById('formRevision').checked = !!item.revisionRequired;
+      document.getElementById('formFavorite').checked = !!item.favorite;
+
+      modal.classList.add('open');
+      document.getElementById('formTitle').focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      form.reset();
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById('entryId').value;
+      const tagsRaw = document.getElementById('formTags').value;
+      const tags = tagsRaw
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+
+      const entryData = {
+        date: document.getElementById('formDate').value || getTodayISO(),
+        duration: Number(document.getElementById('formDuration').value) || 0,
+        title: document.getElementById('formTitle').value.trim(),
+        category: document.getElementById('formCategory').value,
+        domain: document.getElementById('formDomain').value.trim(),
+        difficulty: document.getElementById('formDifficulty').value,
+        status: document.getElementById('formStatus').value,
+        tags: tags,
+        resource: document.getElementById('formResource').value.trim(),
+        description: document.getElementById('formDescription').value.trim(),
+        revisionRequired: document.getElementById('formRevision').checked,
+        favorite: document.getElementById('formFavorite').checked,
+        updatedAt: Date.now()
+      };
+
+      if (id) {
+        const index = entries.findIndex(e => e.id === id);
+        if (index !== -1) {
+          entries[index] = { ...entries[index], ...entryData };
+        }
+      } else {
+        entryData.id = 'entry_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+        entryData.createdAt = Date.now();
+        entries.push(entryData);
+      }
+
+      saveEntries();
+      closeModal();
+      renderAll();
+    });
+
+    function exportToJSON() {
+      if (entries.length === 0) {
+        return;
+      }
+      const dataStr = JSON.stringify(entries, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `learning_tracker_backup_${getTodayISO()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function handleImportFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!Array.isArray(parsed)) {
+            return;
+          }
+
+          const confirmed = window.confirm(
+            `Importing will overwrite existing entries with ${parsed.length} items from the file. Proceed?`
+          );
+
+          if (confirmed) {
+            entries = parsed;
+            saveEntries();
+            renderAll();
+          }
+        } catch (err) {
+          console.error('Invalid JSON file:', err);
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterDate').value = '';
+      document.getElementById('filterCategory').value = '';
+      document.getElementById('filterDomain').value = '';
+      document.getElementById('filterDifficulty').value = '';
+      document.getElementById('filterStatus').value = '';
+      document.getElementById('filterRevision').checked = false;
+      document.getElementById('filterFavorites').checked = false;
+      document.getElementById('sortBy').value = 'newest';
+      renderAll();
+    }
+
+    function renderAll() {
+      updateStatistics();
+      renderTimeline();
+    }
+
+    // Modal controls
+    document.getElementById('btnOpenAddModal').addEventListener('click', openAddModal);
+    document.getElementById('btnEmptyAdd').addEventListener('click', openAddModal);
+    document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+    document.getElementById('btnCancelModal').addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Breakdown toggle
+    const btnToggleAnalytics = document.getElementById('btnToggleAnalytics');
+    const analyticsPanel = document.getElementById('analyticsPanel');
+    btnToggleAnalytics.addEventListener('click', () => {
+      const isHidden = analyticsPanel.classList.toggle('hidden');
+      btnToggleAnalytics.innerText = isHidden ? 'Detailed Breakdown ▾' : 'Hide Breakdown ▴';
+    });
+
+    // Filter and search live updates
+    [
+      'searchInput', 'filterDate', 'filterCategory', 'filterDomain',
+      'filterDifficulty', 'filterStatus', 'sortBy'
+    ].forEach(id => {
+      document.getElementById(id).addEventListener('input', renderTimeline);
+      document.getElementById(id).addEventListener('change', renderTimeline);
+    });
+
+    document.getElementById('filterRevision').addEventListener('change', renderTimeline);
+    document.getElementById('filterFavorites').addEventListener('change', renderTimeline);
+    document.getElementById('btnResetFilters').addEventListener('click', resetFilters);
+
+    // Export and Import triggers
+    document.getElementById('btnExportData').addEventListener('click', exportToJSON);
+    document.getElementById('btnTriggerImport').addEventListener('click', () => {
+      document.getElementById('importFileInput').click();
+    });
+    document.getElementById('importFileInput').addEventListener('change', handleImportFile);
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) {
+        closeModal();
+      }
+    });
+
+    // Initial load
+    loadEntries();
+    renderAll();
+  </script>
+</body>
+</html>
